@@ -3,20 +3,11 @@ import math
 class Figure:
     sides_count = 0
 
-    def __init__(self,color,*sides):
-        self.__color = []
-        self.__sides = []
-        for i in range(len(color)):
-            self.__color.append(color[i])
-        if len(sides) == self.sides_count:
-            for i in range(self.sides_count):
-                self.__sides.append(sides[i])
-        elif len(sides) == 1:
-            for i in range(self.sides_count):
-               self.__sides.append(sides[0])
-        else:
-            for i in range(self.sides_count):
-               self.__sides.append(1)
+    def __init__(self,color: list,*sides: int):
+        self.__color = [*color] if self.__is_valid_color(*color) else [0,0,0]
+        self.__sides = [*sides] if len(sides) == self.sides_count else [1] * self.sides_count
+        if len(sides) == 1 and len(sides) != self.sides_count:
+            self.__sides = sides * self.sides_count
 
     def get_color(self):
         return self.__color
@@ -25,27 +16,27 @@ class Figure:
         if isinstance(r,int) and isinstance(g,int) and isinstance(b,int):
             if 0 <= r <= 255 and 0 <= g <= 255 and 0 <= b <= 255:
                 return True
-            else:
-                return False
-        else:
-            return False
-
+        return False
     def set_color(self,r,g,b):
         if self.__is_valid_color(r,g,b):
-            self.__color[0] = r
-            self.__color[1] = g
-            self.__color[2] = b
+            self.__color = [r,g,b]
 
     def get_sides(self):
         return  self.__sides
 
     def __len__(self):
         return sum(self.__sides)
+    def __is_valid_sides(self,*sides):
+        for side in sides:
+            if not isinstance(side, int):
+                return False
+        if len(sides) == self.sides_count:
+            return True
+
 
     def set_sides(self, *new_sides):
-        if len(new_sides) == self.sides_count:
-            for i in range(self.sides_count):
-                self.__sides[i] = new_sides[i]
+        if self.__is_valid_sides(*new_sides):
+            self.__sides = [*new_sides]
 
 class Circle(Figure):
     sides_count = 1
@@ -57,13 +48,16 @@ class Circle(Figure):
 class Triangle(Figure):
     sides_count = 3
     def get_square(self):
-        sides = self.get_sides()
+        a,b,c = self.get_sides()
         p = len(self)/2
-        s = (p * (p - sides[0]) * (p - sides[1]) * (p - sides[2])) ** (1/2)
+        s = (p * (p - a) * (p - b) * (p - c)) ** (1/2)
         return s
 
 class Cube(Figure):
     sides_count = 12
+    def __init__(self,color: list,*sides: int):
+        super().__init__(color,*sides)
+        self.set_sides(*list(sides)*12)
 
     def  get_volume(self):
         side = self.get_sides()[0]
