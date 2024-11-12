@@ -125,31 +125,31 @@ def register_handlers(bot: TeleBot):
                 user_data['price'] = message.text
                 bot.register_next_step_handler(call.message, get_last_q)
 
-                def get_last_q(message):
-                    question = "У нас остался всего один вопрос. Откуда вы о нас узнали? Для нас это очень важно"
-                    keyboard = types.InlineKeyboardMarkup()
-                    key_yandex = types.InlineKeyboardButton(text='Реклама в яндексе', callback_data='yandex')
-                    key_radio = types.InlineKeyboardButton(text='Реклама на радио', callback_data='radio')
-                    keyboard.add(key_yandex, key_radio)
-                    key_social = types.InlineKeyboardButton(text='Соц сети', callback_data='social')
-                    key_replay = types.InlineKeyboardButton(text='Нас вам посоветовали', callback_data='replay')
-                    keyboard.add(key_social, key_replay)
-                    key_kon = types.InlineKeyboardButton(text='Видели на конкурсе', callback_data='kon')
-                    key_internet = types.InlineKeyboardButton(text='Нашли в интернете', callback_data='internet')
-                    keyboard.add(key_kon, key_internet)
-                    key_other = types.InlineKeyboardButton(text='другое', callback_data='other')
-                    keyboard.add(key_other)
-                    bot.send_message(message.from_user.id, text=question, reply_markup=keyboard)
+        def get_last_q(message):
+            question = "У нас остался всего один вопрос. Откуда вы о нас узнали? Для нас это очень важно"
+            keyboard = types.InlineKeyboardMarkup()
+            key_yandex = types.InlineKeyboardButton(text='Реклама в яндексе', callback_data='yandex')
+            key_radio = types.InlineKeyboardButton(text='Реклама на радио', callback_data='radio')
+            keyboard.add(key_yandex, key_radio)
+            key_social = types.InlineKeyboardButton(text='Соц сети', callback_data='social')
+            key_replay = types.InlineKeyboardButton(text='Нас вам посоветовали', callback_data='replay')
+            keyboard.add(key_social, key_replay)
+            key_kon = types.InlineKeyboardButton(text='Видели на конкурсе', callback_data='kon')
+            key_internet = types.InlineKeyboardButton(text='Нашли в интернете', callback_data='internet')
+            keyboard.add(key_kon, key_internet)
+            key_other = types.InlineKeyboardButton(text='другое', callback_data='other')
+            keyboard.add(key_other)
+            bot.send_message(message.from_user.id, text=question, reply_markup=keyboard)
 
-                    @bot.callback_query_handler(func=lambda call: call.data in
-                                                                  ['yandex', 'radio', 'social', 'replay', 'kon',
-                                                                   'internet',
-                                                                   'other'])
-                    def good_by(call):
-                        user_data['source'] = call.data
-                        bot.edit_message_reply_markup(call.message.chat.id, call.message.message_id, reply_markup=None)
-                        bot.send_message(call.message.chat.id, "Спасибо, ваш заказ принят!")
-                        bot.send_message(call.message.chat.id, str(user_data))
+            @bot.callback_query_handler(func=lambda call: call.data in
+                                                          ['yandex', 'radio', 'social', 'replay', 'kon',
+                                                           'internet',
+                                                           'other'])
+            def good_by(call):
+                user_data['source'] = call.data
+                bot.edit_message_reply_markup(call.message.chat.id, call.message.message_id, reply_markup=None)
+                bot.send_message(call.message.chat.id, "Спасибо, ваш заказ принят!")
+                bot.send_message(call.message.chat.id, str(user_data))
 
     def process_phone_step(message):
         user_data['phone'] = message.text
